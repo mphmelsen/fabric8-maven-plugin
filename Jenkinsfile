@@ -35,6 +35,8 @@ node('jdk8') {
 
      sh "rm -rf oc-build && mkdir -p oc-build/deployments"
 
+     input message: "figured out the problem?"
+
      sh "cp target/*.war oc-build/deployments/ROOT.war"
 
      // clean up. keep the image stream
@@ -52,6 +54,9 @@ node('jdk8') {
      // create openshift project
      echo "creating openshift project next in order to host the container"
      sh "${ocCmd} new-project ${microservice} --display-name='Temporary development project used to host ${microservice}'"
+
+     // add required permissions to new os project
+     sh "${ocCmd}  policy add-role-to-user edit system:serviceaccount:${microservice}:default -n ${microservice}"
 
      // deploy image
      sh "${ocCmd} new-app ${microservice}:latest -n dev"
