@@ -3,7 +3,7 @@
 node('jdk8') {
 
 
-   def microservice = 'mjop-elements'
+   microservice = 'mjop-elements'
 
    // define commands
    def mvnHome = tool 'M3'
