@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+
 node('jdk8') {
    // define commands
    def mvnHome = tool 'M3'
