@@ -13,7 +13,7 @@ node('jdk8') {
 
    stage 'Build'
 
-     git url: 'http://gogs.openshift.itris.lan/itris/' + ${microservice} + '.git'
+     git url: 'http://gogs.openshift.itris.lan/itris/' + microservice + '.git'
      def v = version()
      sh "${mvnCmd} clean install -DskipTests=true"
 
@@ -35,28 +35,17 @@ node('jdk8') {
 
      sh "rm -rf oc-build && mkdir -p oc-build/deployments"
 
-     input message: "figured out the problem?"
-
+     // rename war to ROOT as OpenShift expects this
      sh "cp target/*.war oc-build/deployments/ROOT.war"
 
      // clean up. keep the image stream
-     sh "${ocCmd} delete bc,dc,svc,route -l app=${microservice} -n ${microservice}"
-
-     // delete any left over projects with the same name from previous attempts
-     sh "${ocCmd} delete project ${microservice}"
+     sh "${ocCmd} delete bc,dc,svc,route -l app=${microservice} -n dev"
 
      // create build. override the exit code since it complains about exising imagestream
      sh "${ocCmd} new-build --name=${microservice} --image-stream=jboss-eap64-openshift --binary=true --labels=app=${microservice} -n dev || true"
 
      // build image
-     sh "${ocCmd} start-build ${microservice} --from-dir=oc-build --wait=true -n ${microservice}"
-
-     // create openshift project
-     echo "creating openshift project next in order to host the container"
-     sh "${ocCmd} new-project ${microservice} --display-name='Temporary development project used to host ${microservice}'"
-
-     // add required permissions to new os project
-     sh "${ocCmd}  policy add-role-to-user edit system:serviceaccount:${microservice}:default -n ${microservice}"
+     sh "${ocCmd} start-build ${microservice} --from-dir=oc-build --wait=true -n dev"
 
      // deploy image
      sh "${ocCmd} new-app ${microservice}:latest -n dev"
