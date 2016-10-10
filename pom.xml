@@ -29,6 +29,18 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.180.redhat-3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>5.0.9.Final-redhat-1</version>
+            </dependency>
+
             <!-- provided dependencies -->
             <dependency>
                 <groupId>javax</groupId>
@@ -63,6 +75,7 @@
     </scm>
 
     <build>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -120,9 +133,23 @@
                             <Git-SHA-1>${buildNumber}</Git-SHA-1>
                         </manifestEntries>
                     </archive>
+
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp/WEB-INF</directory>
+                            <filtering>true</filtering>
+                            <include>buildNumber.properties</include>
+                            <targetPath>/WEB-INF/classes</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>src/main/webapp/WEB-INF</directory>
+                            <filtering>true</filtering>
+                            <include>jboss-web.xml</include>
+                            <targetPath>/WEB-INF</targetPath>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
