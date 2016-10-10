@@ -2,8 +2,11 @@
 
 node('jdk8') {
 
-
+   // name of this project
    microservice = 'mjop-elements'
+
+   // evnironment name in ose to deploy instance to
+   osEnvironment = 'development'
 
    // define commands
    def mvnHome = tool 'M3'
@@ -39,21 +42,21 @@ node('jdk8') {
      sh "cp target/*.war oc-build/deployments/ROOT.war"
 
      // clean up. keep the image stream
-     sh "${ocCmd} delete bc,dc,svc,route -l app=${microservice} -n dev"
+     sh "${ocCmd} delete bc,dc,svc,route -l app=${microservice} -n ${osEnvironment}"
 
      // create build. override the exit code since it complains about exising imagestream
-     sh "${ocCmd} new-build --name=${microservice} --image-stream=jboss-eap64-openshift --binary=true --labels=app=${microservice} -n dev || true"
+     sh "${ocCmd} new-build --name=${microservice} --image-stream=jboss-eap64-openshift --binary=true --labels=app=${microservice} -n ${osEnvironment} || true"
 
      // build image
-     sh "${ocCmd} start-build ${microservice} --from-dir=oc-build --wait=true -n dev"
+     sh "${ocCmd} start-build ${microservice} --from-dir=oc-build --wait=true -n ${osEnvironment}"
 
      // deploy image
-     sh "${ocCmd} new-app ${microservice}:latest -n dev"
+     sh "${ocCmd} new-app ${microservice}:latest -n ${osEnvironment}"
 
-     sh "${ocCmd} expose svc/${microservice} -n dev"
+     sh "${ocCmd} expose svc/${microservice} -n ${osEnvironment}"
 
      // tag for stage
-     sh "${ocCmd} tag dev/${microservice}:latest stage/${microservice}:${v}"
+     sh "${ocCmd} tag ${osEnvironment}/${microservice}:latest stage/${microservice}:${v}"
 
 }
 
