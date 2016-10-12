@@ -57,6 +57,7 @@ node('jdk8') {
 
      // tag for stage
      sh "${ocCmd} tag ${osEnvironment}/${microservice}:latest stage/${microservice}:${v}"
+     sh "${ocCmd} tag ${osEnvironment}/${microservice}:latest stage/${microservice}:latest"
 
 }
 
