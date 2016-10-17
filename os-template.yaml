@@ -1,0 +1,106 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: "mjopelements"
+  annotations:
+    iconClass: icon-jboss
+    description: Application template for mjop-elements EAP 6 & Postgresql built using
+      Docker
+labels:
+  application: mjop-elements
+parameters:
+- description: The name for the application.
+  name: APPLICATION_NAME
+  value: mjop-elements
+- description: 'Custom hostname for service routes.  Leave blank for default hostname,
+    e.g.: <application-name>.<project>.<default-domain-suffix>'
+  name: APPLICATION_HOSTNAME
+- description: Git source URI for application
+  name: GIT_URI
+  value: https://github.com/jorgemoralespou/openshift3mlbparks.git
+- description: Git branch/tag reference
+  name: GIT_REF
+  value: master
+- description: Maven mirror url. If nexus is deployed locally, use nexus url (e.g.
+    http://nexus.ci.apps.10.2.2.2.xip.io/content/groups/public/)
+  name: MAVEN_MIRROR_URL
+  displayName: Maven mirror url
+  required: false
+- description: Generic build trigger secret
+  name: GENERIC_TRIGGER_SECRET
+  from: "[a-zA-Z0-9]{8}"
+  generate: expression
+- name: MEMORY_LIMIT
+  displayName: Memory Limit
+  description: Maximum amount of memory the container can use.
+  value: 512Mi
+- name: NAMESPACE
+  displayName: Namespace
+  description: The OpenShift Namespace where the ImageStream resides.
+  value: openshift
+- name: DATABASE_SERVICE_NAME
+  displayName: Database Service Name
+  description: The name of the OpenShift Service exposed for the database.
+  value: postgresql
+  required: true
+- name: POSTGRESQL_USER
+  displayName: PostgreSQL Connection Username
+  description: Username for PostgreSQL user that will be used for accessing the database.
+  generate: expression
+  from: user[A-Z0-9]{3}
+  required: true
+- name: POSTGRESQL_PASSWORD
+  displayName: PostgreSQL Connection Password
+  description: Password for the PostgreSQL connection user.
+  generate: expression
+  from: "[a-zA-Z0-9]{16}"
+  required: true
+- name: POSTGRESQL_DATABASE
+  displayName: PostgreSQL Database Name
+  description: Name of the PostgreSQL database accessed.
+  value: sampledb
+  required: true
+- name: VOLUME_CAPACITY
+  displayName: Volume Capacity
+  description: Volume space available for data, e.g. 512Mi, 2Gi.
+  value: 1Gi
+  required: true
+- name: POSTGRESQL_VERSION
+  displayName: Version of PostgreSQL Image
+  description: Version of PostgreSQL image to be used (9.2, 9.4, 9.5 or latest).
+  value: '9.5'
+  required: true
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      description: Builds the mjop-elements wildfly pod
+    labels:
+      name: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "${APPLICATION_NAME}:latest"
+    source:
+      contextDir: docker
+      git:
+        uri: http://gogs.openshift.itris.lan/itris/mjop-elements
+      type: git
+      secrets: []
+    strategy:
+      dockerStrategy:
+
+      type: Docker
+    triggers:
+    - type: ImageChange
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+  spec:
+    tags:
+    - name: latest
