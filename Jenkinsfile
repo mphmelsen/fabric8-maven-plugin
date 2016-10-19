@@ -41,6 +41,8 @@ node('jdk8') {
      // rename war to ROOT as OpenShift expects this
      sh "cp target/*.war oc-build/deployments/ROOT.war"
 
+     sh "cp docker/* oc-build/"
+
      // clean up. keep the image stream
      sh "${ocCmd} delete bc,dc,svc,route -l app=${microservice} -n ${osEnvironment}"
 
