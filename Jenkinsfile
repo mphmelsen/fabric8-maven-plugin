@@ -34,7 +34,7 @@ node('jdk8') {
    stage 'Push to Nexus'
      sh "${mvnCmd} deploy -DskipTests=true"
 
-   stage 'Deploy DEV'
+   stage 'Deploy Development'
 
      sh "rm -rf oc-build && mkdir -p oc-build/deployments"
 
@@ -45,7 +45,10 @@ node('jdk8') {
      sh "${ocCmd} delete bc,dc,svc,route -l app=${microservice} -n ${osEnvironment}"
 
      // create build. override the exit code since it complains about exising imagestream
-     sh "${ocCmd} new-build --name=${microservice} --image-stream=jboss-eap64-openshift --binary=true --labels=app=${microservice} -n ${osEnvironment} || true"
+//     sh "${ocCmd} new-build --name=${microservice} --image-stream=jboss-eap64-openshift --binary=true --labels=app=${microservice} -n ${osEnvironment} || true"
+
+     // cat the dockerfile and add it through stdin to the new-build
+     sh "cat docker/Dockerfile | ${ocCmd} new-build --labels=app=${microservice} -n ${osEnvironment} --name=${microservice} -D - || true"
 
      // build image
      sh "${ocCmd} start-build ${microservice} --from-dir=oc-build --wait=true -n ${osEnvironment}"

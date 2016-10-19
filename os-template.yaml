@@ -75,31 +75,31 @@ parameters:
 
 # Application and applicationserver setup
 objects:
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    annotations:
-      description: Builds the mjop-elements wildfly image
-    labels:
-      name: ${APPLICATION_NAME}
-    name: ${APPLICATION_NAME}
-  spec:
-    output:
-      to:
-        kind: ImageStreamTag
-        name: "${APPLICATION_NAME}:latest"
-    source:
-      contextDir: docker
-      git:
-        uri: http://gogs.openshift.itris.lan/itris/mjop-elements
-      type: git
-      secrets: []
-    strategy:
-      type: Docker
-    triggers:
-    - type: ConfigChange
-    - imageChange: {}
-      type: ImageChange
+#- apiVersion: v1
+#  kind: BuildConfig
+#  metadata:
+#    annotations:
+#      description: Builds the mjop-elements wildfly image
+#    labels:
+#      name: ${APPLICATION_NAME}
+#    name: ${APPLICATION_NAME}
+#  spec:
+#    output:
+#      to:
+#        kind: ImageStreamTag
+#        name: "${APPLICATION_NAME}:latest"
+#    source:
+#      contextDir: docker
+#      git:
+#        uri: http://gogs.openshift.itris.lan/itris/mjop-elements
+#      type: git
+#      secrets: []
+#    strategy:
+#      type: Docker
+#    triggers:
+#    - type: ConfigChange
+#    - imageChange: {}
+#      type: ImageChange
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -162,10 +162,6 @@ objects:
             value: ${POSTGRESQL_PASSWORD}
           - name: POSTGRES_DATABASE
             value: ${POSTGRESQL_DATABASE}
-          # Workaround for container using legacy Docker links, resulting in
-          # "WFLYCTL0211: Cannot resolve expression 'jdbc:postgresql://${env.POSTGRES_PORT_5432_TCP_ADDR}...")n
-          - name: POSTGRES_PORT_5432_TCP_ADDR
-            value: postgres
           resources: {}
           terminationMessagePath: "/dev/termination-log"
           imagePullPolicy: Always
@@ -174,6 +170,19 @@ objects:
             privileged: false
         restartPolicy: Always
         dnsPolicy: ClusterFirst
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "${APPLICATION_NAME}"
+    annotations:
+      description: The web server's http port
+  spec:
+    ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+    selector:
+      deploymentConfig: "${APPLICATION_NAME}"
 - kind: Route
   apiVersion: v1
   metadata:
