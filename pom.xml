@@ -225,11 +225,11 @@ given to the generated war, and hence the context root) -->
                            <assembly>
                                <!--          <descriptor>${basedir}/src/main/docker/assembly.xml</descriptor> -->
                            </assembly>
-
+<!--
                            <ports>
                                <port>5432</port>
                            </ports>
-
+-->
                        </build>
                        <run>
 
