@@ -43,7 +43,7 @@ public class About {
     @Produces({MediaType.TEXT_PLAIN})
     public JsonObject about() {
 
-        return Json.createObjectBuilder().add("version", properties.getProperty("git-sha-1")).build();
+        return Json.createObjectBuilder().add("version", properties.getProperty("git-sha-1")).add("testchange","the multideploy  seems to work ").build();
     }
 
 }

@@ -1,182 +1,290 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>nl.itris</groupId>
-    <artifactId>mjop-elements</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+<modelVersion>4.0.0</modelVersion>
+<groupId>nl.itris</groupId>
+<artifactId>mjop-elements</artifactId>
+<version>1.0.0-SNAPSHOT</version>
+<packaging>war</packaging>
 
-    <name>Mjop elements</name>
-    <url>http://www.itris.nl</url>
+<name>Mjop elements</name>
+<url>http://www.itris.nl</url>
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+<properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+    <docker.verbose>true</docker.verbose>
+
+   <docker.registry>docker-registry.domain.com:80/default/myimage</docker.registry>
+     <!-- <dockerUseOpenshiftAuth/> -->
+
+</properties>
+
+<dependencies>
+    <dependency>
+        <groupId>javax</groupId>
+        <artifactId>javaee-api</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+    </dependency>
+</dependencies>
+
+<dependencyManagement>
     <dependencies>
+
+       <!-- <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.180.redhat-3</version>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1207.jre7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20080701</version>
+           <!-- <version>5.0.9.Final-redhat-1</version> -->
+        </dependency>
+
+        <!-- provided dependencies -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+</dependencyManagement>
 
-    <dependencyManagement>
-        <dependencies>
+<distributionManagement>
+    <repository>
+        <id>nexus</id>
+        <url>http://nexus.openshift.itris.lan/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+        <id>nexus</id>
+        <url>http://nexus.openshift.itris.lan/content/repositories/snapshots</url>
+    </snapshotRepository>
+</distributionManagement>
 
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>1.4.180.redhat-3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>5.0.9.Final-redhat-1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.json</groupId>
-                <artifactId>json</artifactId>
-                <version>20080701</version>
-            </dependency>
+<scm>
+    <connection>scm:git:git@gogs.openshift.itris.lan/itris/${project.artifactId}.git</connection>
+</scm>
 
-            <!-- provided dependencies -->
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>7.0</version>
-                <scope>provided</scope>
-            </dependency>
+<build>
 
-            <!-- test dependencies -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <!-- Maven will append the version to the finalName (which is the name
+given to the generated war, and hence the context root) -->
+    <finalName>${project.artifactId}</finalName>
 
-    <distributionManagement>
-        <repository>
-            <id>nexus</id>
-            <url>http://nexus.openshift.itris.lan/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus</id>
-            <url>http://nexus.openshift.itris.lan/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <scm>
-        <connection>scm:git:git@gogs.openshift.itris.lan/itris/${project.artifactId}.git</connection>
-    </scm>
-
-    <build>
-
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.sonarsource.scanner.maven</groupId>
-                    <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.0.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.6.201602180812</version>
-                    <executions>
-                        <execution>
-                            <id>default-prepare-agent</id>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>default-report</id>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>buildnumber-maven-plugin</artifactId>
-                    <version>1.1</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
-
+    <pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <failOnMissingWebXml>${failOnMissingWebXml}</failOnMissingWebXml>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <!-- Adds ${buildNumber} as an entry in the manifest file -->
-                            <Git-SHA-1>${buildNumber}</Git-SHA-1>
-                        </manifestEntries>
-                    </archive>
-
-                    <webResources>
-                        <resource>
-                            <directory>src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
-                            <include>buildNumber.properties</include>
-                            <targetPath>/WEB-INF/classes</targetPath>
-                        </resource>
-                        <resource>
-                            <directory>src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
-                            <include>jboss-web.xml</include>
-                            <targetPath>/WEB-INF</targetPath>
-                        </resource>
-                    </webResources>
-                </configuration>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.0.1</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.6.201602180812</version>
                 <executions>
                     <execution>
-                        <phase>validate</phase>
+                        <id>default-prepare-agent</id>
                         <goals>
-                            <goal>create</goal>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.1</version>
+            </plugin>
         </plugins>
-    </build>
+    </pluginManagement>
+
+
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+                <failOnMissingWebXml>${failOnMissingWebXml}</failOnMissingWebXml>
+                <archive>
+                    <manifest>
+                        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    </manifest>
+                    <manifestEntries>
+                        <!-- Adds ${buildNumber} as an entry in the manifest file -->
+                        <Git-SHA-1>${buildNumber}</Git-SHA-1>
+                    </manifestEntries>
+                </archive>
+
+                <webResources>
+                    <resource>
+                        <directory>src/main/webapp/WEB-INF</directory>
+                        <filtering>true</filtering>
+                        <include>buildNumber.properties</include>
+                        <targetPath>/WEB-INF/classes</targetPath>
+                    </resource>
+                    <resource>
+                        <directory>src/main/webapp/WEB-INF</directory>
+                        <filtering>true</filtering>
+                        <include>jboss-web.xml</include>
+                        <targetPath>/WEB-INF</targetPath>
+                    </resource>
+                </webResources>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>${maven.compiler.source}</source>
+                <target>${maven.compiler.target}</target>
+            </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>buildnumber-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>create</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
+        <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>fabric8-maven-plugin</artifactId>
+             <version>3.1.9</version>
+
+             <configuration>
+                 <mode>openshift</mode>
+                 <logDate>default</logDate>
+                 <autoPull>true</autoPull>
+                 <buildStrategy>docker</buildStrategy> <!-- s2i opention does not seem to work: it generates no strategy information in the openshift.yml file -->
+
+                 <resources>
+                    <labels>
+                        <all>
+                            <organisation>Itrisnew</organisation>
+                        </all>
+
+                     </labels>
+
+                 </resources>
+
+                 <images>
+                 <!-- Postgres Image is used 'as-is' and is linked into the service image  -->
+                   <image>
+                        <alias>database</alias>
+                        <name>mypostgresdb</name>
+                       <build>
+                           <dockerFileDir>${basedir}/docker_db</dockerFileDir>
+                           <assembly>
+                               <!--          <descriptor>${basedir}/src/main/docker/assembly.xml</descriptor> -->
+                           </assembly>
+
+                           <ports>
+                               <port>5432</port>
+                           </ports>
+
+                       </build>
+                       <run>
+
+                           <wait>
+                                <log>database system is ready to accept connections</log>
+                                <time>20000</time>
+                            </wait>
+
+                        </run>
+                    </image>
+
+                    <!-- Image holding the artifact of this build -->
+                    <image>
+                        <!-- Alias name which can used for linking containers during runtime -->
+                        <alias>service</alias>
+                        <name>${project.artifactId}:${project.version}</name>
+
+                        <build>
+                            <dockerFileDir>${basedir}/docker</dockerFileDir>
+                            <assembly>
+                      <!--          <descriptor>${basedir}/src/main/docker/assembly.xml</descriptor>
+                                <descriptorRef>artifact-with-dependencies</descriptorRef> -->
+                                <descriptorRef>artifact</descriptorRef>
+                            </assembly>
+                            <ports>
+                                <port>8080</port>
+                            </ports>
+
+                           <!-- <volumes><volume>/var/v100</volume></volumes> -->
+                        </build>
+
+                    </image>
+                </images>
+                 <authConfig>
+                     <username>admin</username>
+                     <password>admin</password>
+                     <useOpenShiftAuth>true</useOpenShiftAuth>
+                 </authConfig>
+            </configuration>
+
+            <executions>
+                <execution>
+
+                    <goals>
+                        <goal>resource</goal>
+                        <goal>build</goal>
+                        <goal>deploy</goal>
+
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
+    </plugins>
+</build>
 
 
 </project>

@@ -164,6 +164,7 @@
                         <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"/>
                     </validation>
                 </datasource>
+
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
@@ -171,6 +172,7 @@
                     <driver name="postgresql" module="org.postgresql">
                         <xa-datasource-class>org.postgresql.xa.PGXADataSource</xa-datasource-class>
                     </driver>
+
                 </drivers>
             </datasources>
         </subsystem>
