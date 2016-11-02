@@ -222,14 +222,6 @@ given to the generated war, and hence the context root) -->
                         <name>mypostgresdb</name>
                        <build>
                            <dockerFileDir>${basedir}/docker_db</dockerFileDir>
-                           <assembly>
-                               <!--          <descriptor>${basedir}/src/main/docker/assembly.xml</descriptor> -->
-                           </assembly>
-<!--
-                           <ports>
-                               <port>5432</port>
-                           </ports>
--->
                        </build>
                        <run>
 
