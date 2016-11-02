@@ -5,6 +5,8 @@ spec:
         -
           env:
           - name: POSTGRESQL_USER
-            value: postgres
+            value: mjopadmin
           - name: POSTGRESQL_PASSWORD
-            value: postgres
+            value: mjopadmin
+          - name: POSTGRESQL_DATABASE
+            value: mjopelements
