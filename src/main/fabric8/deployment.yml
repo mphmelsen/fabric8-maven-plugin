@@ -2,7 +2,7 @@ spec:
   template:
     spec:
       containers:
-        -
+        - name: database
           env:
           - name: POSTGRESQL_USER
             value: mjopadmin
@@ -10,3 +10,14 @@ spec:
             value: mjopadmin
           - name: POSTGRESQL_DATABASE
             value: mjopelements
+
+        - name: service
+          env:
+          - name: POSTGRESQL_USER
+            value: mjopadminXXX
+          - name: POSTGRESQL_PASSWORD
+            value: mjopadminXXX
+          - name: POSTGRESQL_DATABASE
+            value: mjopelementsXXX
+          - name: POSTGRESQL_DATABASE_HOST
+            value: mjopelementsdbHOST
