@@ -4,7 +4,7 @@ metadata:
   name: jenkins
 labels:
   template: jenkins
-  group: jenkins
+  group: continuous-delivery
 metadata:
   annotations:
     description: Creates the jenkins setup
@@ -68,14 +68,14 @@ objects:
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
-    name: ${JENKINS_SERVICE_NAME}-claim
+    name: jenkins-claim
   spec:
     accessModes:
     - ReadWriteOnce
     resources:
       requests:
         storage: ${VOLUME_CAPACITY_2G}
-    volumeName: pv10
+    volumeName: pv100
   status: {}
 - apiVersion: v1
   kind: Service
@@ -135,6 +135,7 @@ objects:
       sourceStrategy:
         from:
           kind: ImageStreamTag
+          namespace: openshift
           name: jenkins:latest
       type: Source
     triggers:
@@ -198,7 +199,7 @@ objects:
         volumes:
         - name: ${JENKINS_SERVICE_NAME}-data
           persistentVolumeClaim:
-            claimName: ${JENKINS_SERVICE_NAME}-claim
+            claimName: jenkins-claim
     triggers:
     - type: ConfigChange
     - imageChangeParams:

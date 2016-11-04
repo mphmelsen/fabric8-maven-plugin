@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: nexus
+labels:
+  template: nexus
+  group: continuous-delivery
+metadata:
+  annotations:
+    description: Template for Nexus
+    iconClass: icon-jenkins
+    tags: nexus
+  name: nexus
+parameters:
+- description: Nexus Repository service name
+  name: NEXUS_SERVICE_NAME
+  value: nexus
+- description: Username for PostgreSQL backend
+  displayName: PostgreSQL User
+  from: user[A-Z0-9]{3}
+  generate: expression
+  name: POSTGRESQL_USER
+  required: true
+- description: Volume space available for data, e.g. 512Mi, 2Gi.
+  displayName: Volume Capacity
+  name: VOLUME_CAPACITY_1G
+  required: true
+  value: 1Gi
+- description: Volume space available for data, e.g. 512Mi, 2Gi.
+  displayName: Volume Capacity
+  name: VOLUME_CAPACITY_2G
+  required: true
+  value: 2Gi
+- description: Volume space available for data, e.g. 512Mi, 2Gi.
+  displayName: Volume Capacity
+  name: VOLUME_CAPACITY_3G
+  required: true
+  value: 3Gi
+objects:
+# Sonatype Nexus
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: nexus
+    name: nexus
+  spec:
+    dockerImageRepository: docker.io/sonatype/nexus
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: nexus
+  spec:
+    accessModes:
+    - ReadWriteMany
+    resources:
+      requests:
+        storage: ${VOLUME_CAPACITY_3G}
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: Sonatype Nexus repository manager's http port
+    labels:
+      app: ${NEXUS_SERVICE_NAME}
+    name: ${NEXUS_SERVICE_NAME}
+  spec:
+    ports:
+    - name: web
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+    selector:
+      app: ${NEXUS_SERVICE_NAME}
+      deploymentconfig: ${NEXUS_SERVICE_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${NEXUS_SERVICE_NAME}
+    name: ${NEXUS_SERVICE_NAME}
+  spec:
+    host: nexus.openshift.itris.lan
+    to:
+      kind: Service
+      name: ${NEXUS_SERVICE_NAME}
+    port:
+      targetPort: web
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${NEXUS_SERVICE_NAME}
+    name: ${NEXUS_SERVICE_NAME}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: nexus:latest
+    resources:
+      limits:
+        memory: 2Gi
+    source:
+      contextDir: nexus
+      git:
+        uri: http://bitbucket.openshift.itris.lan/scm/vptx/shared-services.git
+        ref: master
+      secrets: []
+      type: Git
+    strategy:
+      dockerStrategy:
+        dockerfilePath:
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${NEXUS_SERVICE_NAME}
+    name: ${NEXUS_SERVICE_NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${NEXUS_SERVICE_NAME}
+      deploymentconfig: ${NEXUS_SERVICE_NAME}
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          app: ${NEXUS_SERVICE_NAME}
+          deploymentconfig: ${NEXUS_SERVICE_NAME}
+      spec:
+        containers:
+        - image: " "
+          imagePullPolicy: Always
+          name: nexus
+          ports:
+          - containerPort: 8081
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /opt/nexus-work
+            name: ${NEXUS_SERVICE_NAME}-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: nexus-data
+          persistentVolumeClaim:
+            claimName: nexus
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NEXUS_SERVICE_NAME}
+        from:
+          kind: ImageStreamTag
+          name: nexus:latest
+      type: ImageChange
+  status: {}

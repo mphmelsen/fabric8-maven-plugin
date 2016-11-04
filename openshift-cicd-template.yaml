@@ -265,7 +265,7 @@ objects:
       type: Docker
     triggers:
     - type: ConfigChange
-# Sonatype Nexus
+# openshift-nexus-template.yaml Nexus
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -288,7 +288,7 @@ objects:
   kind: Service
   metadata:
     annotations:
-      description: Sonatype Nexus repository manager's http port
+      description: openshift-nexus-template.yaml Nexus repository manager's http port
     labels:
       app: ${NEXUS_SERVICE_NAME}
     name: ${NEXUS_SERVICE_NAME}
