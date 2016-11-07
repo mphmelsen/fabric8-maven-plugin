@@ -142,6 +142,19 @@ objects:
         containers:
         - image: " "
           imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 3
+          name: jenkins
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 3
+            timeoutSeconds: 3
           name: nexus
           ports:
           - containerPort: 8081
@@ -149,7 +162,7 @@ objects:
           resources: {}
           terminationMessagePath: /dev/termination-log
           volumeMounts:
-          - mountPath: /opt/nexus-work
+          - mountPath: /sonatype-work
             name: ${NEXUS_SERVICE_NAME}-data
         dnsPolicy: ClusterFirst
         restartPolicy: Always
