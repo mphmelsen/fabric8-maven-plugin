@@ -1,4 +1,4 @@
-FROM sonatype/nexus:2.13.0-01
+FROM sonatype/nexus:latest
 
 MAINTAINER Michael Melsen <michael.melsen@itris.nl>
 
