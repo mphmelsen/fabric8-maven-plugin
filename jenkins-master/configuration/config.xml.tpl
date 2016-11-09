@@ -8,7 +8,7 @@
   <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy"/>
   <securityRealm class="org.jenkinsci.plugins.oic.OicSecurityRealm" plugin="oic-auth@1.0">
     <clientId>jenkins</clientId>
-    <clientSecret>hb1wdTKag8hK0sUa2EUSFrp/BEiSVWN1gB5oJYPLtNIv8k64da5BCOo1wBnGqEEARDnEbrm9gnSzlQ+IfgMRkw==</clientSecret>
+    <clientSecret>14d0c53f-3ced-42b5-9664-b59a8a0c4292</clientSecret>
     <tokenServerUrl>http://sso-default.openshift.itris.lan/auth/realms/openshift/protocol/openid-connect/token</tokenServerUrl>
     <authorizationServerUrl>http://sso-default.openshift.itris.lan/auth/realms/openshift/protocol/openid-connect/auth</authorizationServerUrl>
     <userNameField>sub</userNameField>
