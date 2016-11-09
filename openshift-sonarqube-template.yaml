@@ -26,16 +26,6 @@ parameters:
   required: true
 - description: Volume space available for data, e.g. 512Mi, 2Gi.
   displayName: Volume Capacity
-  name: VOLUME_CAPACITY_1G
-  required: true
-  value: 1Gi
-- description: Volume space available for data, e.g. 512Mi, 2Gi.
-  displayName: Volume Capacity
-  name: VOLUME_CAPACITY_2G
-  required: true
-  value: 2Gi
-- description: Volume space available for data, e.g. 512Mi, 2Gi.
-  displayName: Volume Capacity
   name: VOLUME_CAPACITY_3G
   required: true
   value: 3Gi
@@ -50,7 +40,7 @@ objects:
     - ReadWriteOnce
     resources:
       requests:
-        storage: ${VOLUME_CAPACITY_1G}
+        storage: ${VOLUME_CAPACITY_3G}
     volumeName: pv83
 - apiVersion: v1
   kind: Service
@@ -96,6 +86,7 @@ objects:
     labels:
       app: sonarqube
   spec:
+    host: sonarqube.openshift.itris.lan
     to:
       kind: Service
       name: sonarqube
