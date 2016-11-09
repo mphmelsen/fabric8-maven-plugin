@@ -25,56 +25,27 @@ parameters:
   displayName: Jenkins version
   name: JENKINS_VERSION
   required: true
-  value: "2.0"
-- description: Volume space available for data, e.g. 512Mi, 2Gi.
-  displayName: Volume Capacity
-  name: VOLUME_CAPACITY_1G
-  required: true
-  value: 1Gi
-- description: Volume space available for data, e.g. 512Mi, 2Gi.
-  displayName: Volume Capacity
-  name: VOLUME_CAPACITY_2G
-  required: true
-  value: 2Gi
-- description: Volume space available for data, e.g. 512Mi, 2Gi.
-  displayName: Volume Capacity
-  name: VOLUME_CAPACITY_3G
-  required: true
-  value: 3Gi
+  value: "latest"
 objects:
-
-
 # Jenkins Master
 - apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
       app: jenkins
-    name: jenkins
+    name: itris-jenkins
   spec:
-    tags:
-    - name: '2'
-      annotations:
-        openshift.io/display-name: Jenkins 2.X
-        description: Provides a Jenkins v2.x server on CentOS 7. For more information
-          about using this container image, including OpenShift considerations, see
-          https://github.com/openshift/jenkins/blob/master/README.md.
-        iconClass: icon-jenkins
-        tags: jenkins
-        version: 2.x
-      from:
-        kind: DockerImage
-        name: openshift/jenkins-2-centos7:latest
+    dockerImageRepository: docker.io/library/jenkins
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
-    name: jenkins-claim
+    name: jenkins
   spec:
     accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     resources:
       requests:
-        storage: ${VOLUME_CAPACITY_2G}
+        storage: 4Gi
     volumeName: pv100
   status: {}
 - apiVersion: v1
@@ -105,6 +76,7 @@ objects:
       app: jenkins
     name: jenkins
   spec:
+    host: jenkins.openshift.itris.lan
     port:
       targetPort: 8080
     to:
@@ -120,7 +92,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: jenkins:latest
+        name: itris-jenkins:latest
     resources:
       limits:
         memory: 2Gi
@@ -180,7 +152,7 @@ objects:
             httpGet:
               path: /login
               port: 8080
-            initialDelaySeconds: 3
+            initialDelaySeconds: 60
             timeoutSeconds: 3
           ports:
           - containerPort: 8080
@@ -190,7 +162,7 @@ objects:
           resources: {}
           terminationMessagePath: /dev/termination-log
           volumeMounts:
-          - mountPath: /var/lib/jenkins
+          - mountPath: /var/jenkins_home
             name: ${JENKINS_SERVICE_NAME}-data
         dnsPolicy: ClusterFirst
         restartPolicy: Always
@@ -199,7 +171,7 @@ objects:
         volumes:
         - name: ${JENKINS_SERVICE_NAME}-data
           persistentVolumeClaim:
-            claimName: jenkins-claim
+            claimName: jenkins
     triggers:
     - type: ConfigChange
     - imageChangeParams:
@@ -208,7 +180,7 @@ objects:
         - jenkins
         from:
           kind: ImageStreamTag
-          name: jenkins:${JENKINS_VERSION}
+          name: itris-jenkins:latest
       type: ImageChange
 # Jenkins Slave
 - apiVersion: v1
