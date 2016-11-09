@@ -22,17 +22,16 @@
     <builders>
         <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.51">
             <scriptText>def microservices = &apos;&apos;&apos;
-
                 // the following list holds all microservice jobs that needs to be generated
                 microservices {
                 &apos;mjop-elements&apos; {
-                url = &apos;http://bitbucket.openshift.itris.lan/itris/mjop-elements.git&apos;
+                url = &apos;http://bitbucket.openshift.itris.lan/scm/vptx/mjop-elements.git&apos;
                 }
                 &apos;mjop-services&apos; {
-                url = &apos;http://bitbucket.openshift.itris.lan/itris/mjop-services.git&apos;
+                url = &apos;http://bitbucket.openshift.itris.lan/scm/vptx/mjop-services.git&apos;
                 }
                 &apos;main-web-test&apos; {
-                url = &apos;http://bitbucket.openshift.itris.lan/itris/main-web.git&apos;
+                url = &apos;http://bitbucket.openshift.itris.lan/scm/vptx/main-web.git&apos;
                 }
                 }
                 &apos;&apos;&apos;
