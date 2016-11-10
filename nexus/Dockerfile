@@ -1,4 +1,4 @@
-FROM sonatype/nexus:2.13.0-01
+FROM sonatype/docker-nexus3:latest
 
 MAINTAINER Michael Melsen <michael.melsen@itris.nl>
 
@@ -9,4 +9,4 @@ COPY conf/nexus.xml ${SONATYPE_WORK}/conf/nexus.xml
 RUN chown -R nexus ${SONATYPE_WORK} && \
     chmod -R ugo+rw ${SONATYPE_WORK}
 
-USER nobody
+USER nexus
