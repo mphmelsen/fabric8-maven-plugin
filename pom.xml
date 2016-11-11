@@ -284,7 +284,7 @@ given to the generated war, and hence the context root) -->
 
 <profiles>
     <profile>
-        <id>development</id>
+        <id>cdk</id>
         <activation>
             <activeByDefault>true</activeByDefault>
         </activation>
