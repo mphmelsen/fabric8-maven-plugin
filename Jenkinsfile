@@ -16,8 +16,11 @@ node('jdk8') {
 
    stage 'Build'
 
+     sh "${ocCmd} login "
+
      git url: 'http://bitbucket.openshift.itris.lan/scm/vptx/' + microservice + '.git'
      def v = version()
+     // sh "${mvnCmd} clean install -DskipTests=true"
      sh "${mvnCmd} clean install -DskipTests=true"
 
    stage 'Test and Analysis'
