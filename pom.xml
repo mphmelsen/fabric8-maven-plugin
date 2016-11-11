@@ -214,7 +214,7 @@ given to the generated war, and hence the context root) -->
                  <resources>
                     <labels>
                         <all>
-                            <organisation>Itrisnew</organisation>
+                            <organisation>Itris</organisation>
                         </all>
 
                      </labels>
@@ -295,7 +295,7 @@ given to the generated war, and hence the context root) -->
                         <arguments>
                             <argument>delete</argument>
                             <argument>dc</argument>
-                            <argument>--all</argument>
+                            <argument>${project.artifactId}</argument>
                         </arguments>
                     </configuration>
                 </execution>

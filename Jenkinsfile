@@ -16,7 +16,7 @@ node('jdk8') {
 
    stage 'Build'
 
-     git url: 'http://gogs.openshift.itris.lan/itris/' + microservice + '.git'
+     git url: 'http://bitbucket.openshift.itris.lan/scm/vptx/' + microservice + '.git'
      def v = version()
      sh "${mvnCmd} clean install -DskipTests=true"
 
