@@ -203,13 +203,13 @@ given to the generated war, and hence the context root) -->
         <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>fabric8-maven-plugin</artifactId>
-             <version>3.1.9</version>
+             <version>3.1.92</version>
 
              <configuration>
                  <mode>openshift</mode>
                  <logDate>default</logDate>
                  <autoPull>true</autoPull>
-                 <buildStrategy>docker</buildStrategy> <!-- s2i opention does not seem to work: it generates no strategy information in the openshift.yml file -->
+                 <buildStrategy>docker</buildStrategy> <!-- s2i option does not seem to work: it generates no strategy information in the openshift.yml file -->
 
                  <resources>
                     <labels>
