@@ -278,32 +278,100 @@ given to the generated war, and hence the context root) -->
                 </execution>
             </executions>
         </plugin>
-        <plugin>
-            <artifactId>exec-maven-plugin</artifactId>
-            <groupId>org.codehaus.mojo</groupId>
-            <version>1.2.1.jbossorg-3</version>
-            <executions>
-                <execution>
-                    <id>delete-deploymentconfig</id>
-                    <phase>generate-resources</phase>
-                    <goals>
-                        <goal>exec</goal>
-                    </goals>
-                    <configuration>
-                        <!-- perform an oc delete dc to workaround a bug in the fabric8 plugin https://github.com/openshift/origin/issues/8386 -->
-                        <executable>oc</executable>
-                        <arguments>
-                            <argument>delete</argument>
-                            <argument>dc</argument>
-                            <argument>${project.artifactId}</argument>
-                        </arguments>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
+
     </plugins>
 </build>
 
-
+<profiles>
+    <profile>
+        <id>development</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <version>1.2.1.jbossorg-3</version>
+                    <executions>
+                        <execution>
+                            <id>login</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <!-- perform an oc login to login on the cdk-->
+                                <executable>oc</executable>
+                                <arguments>
+                                    <argument>login</argument>
+                                    <argument>10.1.2.2:8443</argument>
+                                    <argument>--username=admin</argument>
+                                    <argument>--password=admin</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>switch-to-project</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <!-- switch to the develpment project-->
+                                <executable>oc</executable>
+                                <arguments>
+                                    <argument>project</argument>
+                                    <argument>development</argument>
+                                </arguments>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>delete-deploymentconfig</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <!-- perform an oc delete dc to workaround a bug in the fabric8 plugin https://github.com/openshift/origin/issues/8386 -->
+                                <executable>oc</executable>
+                                <arguments>
+                                    <argument>delete</argument>
+                                    <argument>dc</argument>
+                                    <argument>${project.artifactId}</argument>
+                                </arguments>
+                                <!-- provide succescode 1 to bypass error when dc does not exist -->
+                                <successCodes>
+                                    <successCode>1</successCode>
+                                </successCodes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
+        <!-- Use this profile for any OpenShift specific customization your app will need. -->
+        <!-- By default that is to put the resulting archive into the 'webapps' folder. -->
+        <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+        <id>openshift</id>
+        <build>
+            <finalName>test</finalName>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.6</version>
+                    <configuration>
+                        <outputDirectory>webapps</outputDirectory>
+                        <warName>ROOT</warName>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>
 </project>
 
