@@ -30,9 +30,7 @@
                 &apos;mjop-services&apos; {
                 url = &apos;http://bitbucket.openshift.itris.lan/scm/vptx/mjop-services.git&apos;
                 }
-                &apos;main-web-test&apos; {
-                url = &apos;http://bitbucket.openshift.itris.lan/scm/vptx/main-web.git&apos;
-                }
+
                 }
                 &apos;&apos;&apos;
 
