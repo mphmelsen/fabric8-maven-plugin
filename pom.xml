@@ -19,6 +19,7 @@
 
    <docker.registry>docker-registry.domain.com:80/default/myimage</docker.registry>
      <!-- <dockerUseOpenshiftAuth/> -->
+    <fabric8.namespace>development</fabric8.namespace>
 
 </properties>
 
