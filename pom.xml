@@ -247,7 +247,7 @@ given to the generated war, and hence the context root) -->
                      <!-- Postgres Image is used 'as-is' and is linked into the service image  -->
                      <image>
                          <alias>db</alias>
-                         <name>${project.artifactId}-db</name>
+                         <name>${project.artifactId}-db:${project.version}</name>
                          <build>
                              <dockerFileDir>${basedir}/docker-db</dockerFileDir>
                          </build>
