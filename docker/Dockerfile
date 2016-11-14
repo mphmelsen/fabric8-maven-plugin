@@ -1,5 +1,5 @@
-FROM jboss/wildfly:9.0.2.Final
-
+#FROM jboss/wildfly:9.0.2.Final
+FROM jboss-eap70-openshift
 ENV postgres_module_dir=/opt/jboss/wildfly/modules/org/postgresql/main/
 
 RUN mkdir -p ${postgres_module_dir}
