@@ -14,5 +14,5 @@ ADD maven/*.war /opt/eap/standalone/deployments
 
 EXPOSE 8787
 
-RUN /opt/eap/bin/add-user.sh admin admin --silent
+RUN /opt/eap/bin/add-user.sh admin v13wp01nt --silent
 CMD ["/opt/eap/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
