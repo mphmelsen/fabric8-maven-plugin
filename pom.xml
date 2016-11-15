@@ -19,6 +19,7 @@
 
    <docker.registry>docker-registry.domain.com:80/default/myimage</docker.registry>
      <!-- <dockerUseOpenshiftAuth/> -->
+    <!-- determine which openshift project will be used to deploy the containers -->
     <fabric8.namespace>development</fabric8.namespace>
 
 </properties>
@@ -91,7 +92,7 @@
 </distributionManagement>
 
 <scm>
-    <connection>scm:git:git@gogs.openshift.itris.lan/itris/${project.artifactId}.git</connection>
+    <connection>scm:git:bitbucket.openshift.itris.lan/scm/vptx/${project.artifactId}.git</connection>
 </scm>
 
 <build>
@@ -269,12 +270,18 @@ given to the generated war, and hence the context root) -->
 
             <executions>
                 <execution>
-
+                    <id>install</id>
+                    <phase>install</phase>
                     <goals>
                         <goal>resource</goal>
                         <goal>build</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>deploy</id>
+                    <phase>deploy</phase>
+                    <goals>
                         <goal>deploy</goal>
-
                     </goals>
                 </execution>
             </executions>
@@ -298,7 +305,7 @@ given to the generated war, and hence the context root) -->
                     <executions>
                         <execution>
                             <id>login</id>
-                            <phase>generate-resources</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>exec</goal>
                             </goals>
@@ -315,7 +322,7 @@ given to the generated war, and hence the context root) -->
                         </execution>
                         <execution>
                             <id>switch-to-project</id>
-                            <phase>generate-resources</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>exec</goal>
                             </goals>
@@ -330,7 +337,7 @@ given to the generated war, and hence the context root) -->
                         </execution>
                         <execution>
                             <id>delete-deploymentconfig</id>
-                            <phase>generate-resources</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>exec</goal>
                             </goals>
