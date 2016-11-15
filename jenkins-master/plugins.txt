@@ -6,7 +6,6 @@ durable-task:1.12
 git:2.5.3
 git-client:1.21.0
 git-server:1.7
-gogs-webhook:1.0.6
 handlebars:1.1.1
 icon-shim:2.0.3
 jquery-detached:1.2.1
