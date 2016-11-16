@@ -1,4 +1,4 @@
-FROM jboss/wildfly:9.0.2.Final
+FROM jboss/keycloak-adapter-wildfly
 
 ENV postgres_module_dir=/opt/jboss/wildfly/modules/org/postgresql/main/
 
