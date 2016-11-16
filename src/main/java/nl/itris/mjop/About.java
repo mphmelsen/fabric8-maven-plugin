@@ -1,4 +1,4 @@
-package nl.itris.common.boundary;
+package nl.itris.mjop;
 
 import javax.ejb.Stateless;
 import javax.json.Json;
