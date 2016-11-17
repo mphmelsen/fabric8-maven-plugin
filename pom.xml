@@ -19,6 +19,11 @@
 
    <docker.registry>docker-registry.domain.com:80/default/myimage</docker.registry>
      <!-- <dockerUseOpenshiftAuth/> -->
+    <fabric8.namespace>development</fabric8.namespace>
+    <jacoco.it.execution.data.file>${project.build.directory}/coverage-reports/jacoco-it.exec
+    </jacoco.it.execution.data.file>
+    <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec
+    </jacoco.ut.execution.data.file>
 
 </properties>
 
