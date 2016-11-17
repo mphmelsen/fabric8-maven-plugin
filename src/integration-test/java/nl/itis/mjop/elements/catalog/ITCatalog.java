@@ -1,4 +1,4 @@
-package nl.itis.catalog;
+package nl.itis.mjop.elements.catalog;
 
 import org.junit.Before;
 import org.junit.Test;
