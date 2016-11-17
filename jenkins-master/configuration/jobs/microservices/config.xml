@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.6">
+    <actions/>
+    <description>Full build pipeline created by seed job that will use all available microservice images to create a running OpenShift microservices environment. &#xd;
+        Once started this environment is used to perform full stack integration tests after which the images are promoted to test, &#xd;
+        acceptance and customer environments.</description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <io.fabric8.jenkins.openshiftsync.BuildConfigProjectProperty plugin="openshift-sync@0.0.12">
+            <uid></uid>
+            <namespace></namespace>
+            <name></name>
+            <resourceVersion></resourceVersion>
+            <contextDir></contextDir>
+        </io.fabric8.jenkins.openshiftsync.BuildConfigProjectProperty>
+        <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+            <triggers/>
+        </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+    </properties>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.13">
+        <script>node(&apos;jdk8&apos;) {
+            // define commands
+            def mvnHome = tool &apos;M3&apos;
+            def mvnCmd = &quot;${mvnHome}/bin/mvn -s ${env.JENKINS_HOME}/settings.xml&quot;
+            def ocCmd = &quot;/usr/bin/oc --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token` --server=https://openshift.default.svc.cluster.local --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt&quot;
+
+            // known openshift environments
+            osDev = &apos;development&apos;
+            osStaging = &apos;staging&apos;
+            osProduction = &apos;production&apos;
+
+            stage &apos;Deploy to Development&apos;
+            // git url: &apos;http://gogs.openshift.itris.lan/itris/mjop-elements.git&apos;
+
+            deploy(&apos;mjop-elements&apos;,  osDev)
+
+            stage &apos;Deploy to Staging&apos;
+
+            input: &apos;Allow deployment of latest version?&apos;
+
+            deploy(&apos;mjop-elements&apos;, osStaging)
+
+
+            stage &apos;Deploy to Production&apos;
+
+            input: &apos;Allow deployment of latest version?&apos;
+
+            deploy(&apos;mjop-elements&apos;, osProduction)
+            }
+
+            def deploy(app, env) {
+
+
+            def ocCmd = &quot;/usr/bin/oc --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token` --server=https://openshift.default.svc.cluster.local --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt&quot;
+            // clean up. keep the imagestream
+            sh &quot;${ocCmd} delete bc,dc,svc,route -l app=${app} -n ${env}&quot;
+
+            sh &quot;${ocCmd} tag ${osDev}/${app}:latest ${env}/${app}:latest&quot;
+
+            // deploy image
+            sh &quot;${ocCmd} new-app ${app}:latest -n ${env}&quot;
+
+            // expose svc
+            sh &quot;${ocCmd} expose svc/${app} -n ${env}&quot;
+
+            }</script>
+        <sandbox>false</sandbox>
+    </definition>
+    <triggers/>
+</flow-definition>
