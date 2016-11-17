@@ -10,7 +10,10 @@ ENV config_dir=/opt/jboss/wildfly/standalone/configuration/
 
 ADD standalone.xml ${config_dir}
 ADD maven/*.war /opt/eap/standalone/deployments
-#RUN chown -R jboss:jboss ${postgres_module_dir}/*
+
+USER root
+RUN chown -R jboss:jboss ${postgres_module_dir}/*
+USER jboss
 
 EXPOSE 8787
 
