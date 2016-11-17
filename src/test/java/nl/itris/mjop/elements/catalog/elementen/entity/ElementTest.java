@@ -9,7 +9,7 @@ import org.junit.Test;
 public class ElementTest {
 
     @BeforeClass
-    public void setup() {
+    public static void setup() {
 
     }
 
