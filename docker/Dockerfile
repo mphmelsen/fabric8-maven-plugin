@@ -9,7 +9,7 @@ ADD postgresql-9.4-1201.jdbc41.jar ${postgres_module_dir}
 ENV config_dir=/opt/jboss/wildfly/standalone/configuration/
 
 ADD standalone.xml ${config_dir}
-ADD maven/*.war /opt/eap/standalone/deployments
+ADD maven/*.war /opt/eap/standalone/deployments/
 
 USER root
 RUN chown -R jboss:jboss ${postgres_module_dir}/*
