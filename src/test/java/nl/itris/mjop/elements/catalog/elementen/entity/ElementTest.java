@@ -10,7 +10,6 @@ public class ElementTest {
 
     @BeforeClass
     public static void setup() {
-
     }
 
     @Test
