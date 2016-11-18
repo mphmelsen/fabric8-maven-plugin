@@ -10,15 +10,18 @@ node('jdk8') {
 
    // define commands
    def mvnHome = tool 'M3'
-   def mvnCmd = "${mvnHome}/bin/mvn -s ${env.JENKINS_HOME}/settings.xml"
+   def mvnCmd = "${mvnHome}/bin/mvn -s ${env.JENKINS_HOME}/settings.xml -Popenshift"
    def ocCmd = "/usr/bin/oc --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token` --server=https://openshift.default.svc.cluster.local --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 
 
-   stage 'Build'
+   stage 'Build code'
 
-     git url: 'http://gogs.openshift.itris.lan/itris/' + microservice + '.git'
+     git url: 'http://bitbucket.openshift.itris.lan/scm/vptx/' + microservice + '.git'
+
+     checkout scm
+
      def v = version()
-     sh "${mvnCmd} clean install -DskipTests=true"
+     sh "${mvnCmd} clean compile"
 
    stage 'Test and Analysis'
      parallel (
@@ -31,29 +34,19 @@ node('jdk8') {
        }
      )
 
-   stage 'Push to Nexus'
+   stage 'Push buildartifact to Nexus'
+
      sh "${mvnCmd} deploy -DskipTests=true"
+
+   stage 'Create image and deploymentconfig'
+
+     sh "${mvnCmd} install"
 
    stage 'Deploy DEV'
 
-     sh "rm -rf oc-build && mkdir -p oc-build/deployments"
+     echo 'Starting deployment of ${microservice} to ${osEnvironment} ...'
 
-     // rename war to ROOT as OpenShift expects this
-     sh "cp target/*.war oc-build/deployments/ROOT.war"
-
-     // clean up. keep the image stream
-     sh "${ocCmd} delete bc,dc,svc,route -l app=${microservice} -n ${osEnvironment}"
-
-     // create build. override the exit code since it complains about exising imagestream
-     sh "${ocCmd} new-build --name=${microservice} --image-stream=jboss-eap64-openshift --binary=true --labels=app=${microservice} -n ${osEnvironment} || true"
-
-     // build image
-     sh "${ocCmd} start-build ${microservice} --from-dir=oc-build --wait=true -n ${osEnvironment}"
-
-     // deploy image
-     sh "${ocCmd} new-app ${microservice}:latest -n ${osEnvironment}"
-
-     sh "${ocCmd} expose svc/${microservice} -n ${osEnvironment}"
+     sh "${mvnCmd} deploy -Dfabric8.namespace=${osEnvironment}"
 
      // tag for staging
      sh "${ocCmd} tag ${osEnvironment}/${microservice}:latest staging/${microservice}:${v}"

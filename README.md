@@ -1,3 +1,3 @@
-# MJOP Elements Microservice
+# Shared Services
 
-This is the repository for the MJOP Elements Microservice. It contains a Jenkinsfile which is used by Jenkins to build this project by a Jenkins Job called 'mjop-elements'.
+This repository holds all configuration for the OpenShift shared services project. Any configuration changes have to be persisted in this repository.
