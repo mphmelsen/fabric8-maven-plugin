@@ -1,31 +1,40 @@
 package nl.itris.mjop.elementen.boundary;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import nl.itris.mjop.handelingen.boundary.Handeling;
+import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
+import org.jboss.resteasy.annotations.providers.jaxb.json.XmlNsMap;
+import org.jboss.resteasy.links.RESTServiceDiscovery;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
-
-
+@Mapped(namespaceMap = @XmlNsMap(jsonName = "atom", namespace = "http://www.w3.org/2005/Atom"))
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaResteasyServerCodegen", date = "2016-11-10T14:14:22.733Z")
 public class Element   {
-  
+
+  @XmlElement
   private Long id = null;
+  @XmlElement
   private String omschrijving = null;
+  @XmlElement
   private String code = null;
+  @XmlElement
   private String elementgroep = null;
+  @XmlElement
   private String levensduur = null;
   private Kostensoort stdkostensoort = null;
+  @XmlElement
   private Element hoofdelement = null;
   private List<Handeling> handelingen = new ArrayList<Handeling>();
 
+  @XmlElementRef
+  private RESTServiceDiscovery rest;
   /**
    **/
-  
-  @JsonProperty("id")
   public Long getId() {
     return id;
   }
@@ -35,8 +44,6 @@ public class Element   {
 
   /**
    **/
-  
-  @JsonProperty("omschrijving")
   public String getOmschrijving() {
     return omschrijving;
   }
@@ -46,8 +53,6 @@ public class Element   {
 
   /**
    **/
-  
-  @JsonProperty("code")
   public String getCode() {
     return code;
   }
@@ -58,8 +63,6 @@ public class Element   {
   /**
    * Nieuwbouw
    **/
-  
-  @JsonProperty("elementgroep")
   public String getElementgroep() {
     return elementgroep;
   }
@@ -69,8 +72,6 @@ public class Element   {
 
   /**
    **/
-  
-  @JsonProperty("levensduur")
   public String getLevensduur() {
     return levensduur;
   }
@@ -80,8 +81,6 @@ public class Element   {
 
   /**
    **/
-  
-  @JsonProperty("stdkostensoort")
   public Kostensoort getStdkostensoort() {
     return stdkostensoort;
   }
@@ -91,8 +90,6 @@ public class Element   {
 
   /**
    **/
-  
-  @JsonProperty("hoofdelement")
   public Element getHoofdelement() {
     return hoofdelement;
   }
@@ -102,15 +99,12 @@ public class Element   {
 
   /**
    **/
-  
-  @JsonProperty("handelingen")
   public List<Handeling> getHandelingen() {
     return handelingen;
   }
   public void setHandelingen(List<Handeling> handelingen) {
     this.handelingen = handelingen;
   }
-
 
   @Override
   public boolean equals(Object o) {
