@@ -16,10 +16,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <docker.verbose>true</docker.verbose>
-
-   <docker.registry>docker-registry.domain.com:80/default/myimage</docker.registry>
+<!--
+   <docker.registry>docker-registry.domain.com:80/default/myimage</docker.registry>-->
      <!-- <dockerUseOpenshiftAuth/> -->
     <fabric8.namespace>development</fabric8.namespace>
+    <fabric8.mode>kubernetes</fabric8.mode>
+    <fabric8.recreate>true</fabric8.recreate>
     <jacoco.it.execution.data.file>${project.build.directory}/coverage-reports/jacoco-it.exec
     </jacoco.it.execution.data.file>
     <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec
@@ -45,6 +47,10 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>5.0.9.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
         </dependency>
     </dependencies>
 
@@ -366,9 +372,8 @@
                 <version>3.1.92</version>
 
                 <configuration>
-                    <mode>openshift</mode>
+                    <!--<mode>openshift</mode>-->
                     <logDate>default</logDate>
-                    <autoPull>true</autoPull>
                     <buildStrategy>docker</buildStrategy> <!-- s2i option does not seem to work: it generates no strategy information in the openshift.yml file -->
                     <resources>
                         <labels>
@@ -427,20 +432,21 @@
                     <!-- Only allow resource generation and image creation when using Install phase -->
                     <execution>
                         <id>install</id>
-                        <phase>install</phase>
+                        <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>resource</goal>
+                            <!--<goal>resource</goal>-->
                             <goal>build</goal>
+                            <!--<goal>deploy</goal>-->
                         </goals>
                     </execution>
-                    <!-- Only allow actual deployment to OpenShift environment when using Deploy phase -->
+                    <!-- Only allow actual deployment to OpenShift environment when using Deploy phase
                     <execution>
                         <id>deploy</id>
                         <phase>deploy</phase>
                         <goals>
                             <goal>deploy</goal>
                         </goals>
-                    </execution>
+                    </execution> -->
                 </executions>
             </plugin>
 
@@ -495,26 +501,6 @@
                                         <argument>project</argument>
                                         <argument>development</argument>
                                     </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>delete-deploymentconfig</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- perform an oc delete dc to workaround a bug in the fabric8 plugin https://github.com/openshift/origin/issues/8386 -->
-                                    <executable>oc</executable>
-                                    <arguments>
-                                        <argument>delete</argument>
-                                        <argument>dc</argument>
-                                        <argument>${project.artifactId}</argument>
-                                    </arguments>
-                                    <!-- provide succescode 1 to bypass error when dc does not exist -->
-                                    <successCodes>
-                                        <successCode>1</successCode>
-                                    </successCodes>
                                 </configuration>
                             </execution>
                         </executions>

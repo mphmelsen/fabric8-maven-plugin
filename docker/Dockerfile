@@ -1,5 +1,5 @@
 #FROM jboss/wildfly:9.0.2.Final
-FROM jboss-eap-6/eap64-openshift
+FROM registry.access.redhat.com/jboss-eap-6/eap64-openshift
 ENV postgres_module_dir=/opt/eap/modules/org/postgresql/main/
 
 RUN mkdir -p ${postgres_module_dir}
