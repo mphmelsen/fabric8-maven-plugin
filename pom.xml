@@ -1,13 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>nl.itris</groupId>
-    <artifactId>mjop-elements</artifactId>
+    <groupId>nl.test</groupId>
+    <artifactId>elements</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>Mjop elements</name>
-    <url>http://www.itris.nl</url>
+         <name>elements</name>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -20,7 +19,7 @@
            <docker.registry>docker-registry.domain.com:80/default/myimage</docker.registry>-->
         <!-- <dockerUseOpenshiftAuth/> -->
         <fabric8.namespace>development</fabric8.namespace>
-        <fabric8.mode>kubernetes</fabric8.mode>
+        <fabric8.mode>openshift</fabric8.mode>
         <fabric8.recreate>true</fabric8.recreate>
         <jacoco.it.execution.data.file>${project.build.directory}/coverage-reports/jacoco-it.exec
         </jacoco.it.execution.data.file>
@@ -89,22 +88,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-
-    <distributionManagement>
-        <repository>
-            <id>nexus</id>
-            <url>http://nexus.openshift.itris.lan/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus</id>
-            <url>http://nexus.openshift.itris.lan/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <scm>
-        <connection>scm:git:bitbucket.openshift.itris.lan/scm/vptx/${project.artifactId}.git</connection>
-    </scm>
 
     <build>
 
@@ -371,14 +354,6 @@
                     <autoPull>true</autoPull>
                     <buildStrategy>docker
                     </buildStrategy> <!-- s2i option does not seem to work: it generates no strategy information in the openshift.yml file -->
-                    <resources>
-                        <labels>
-                            <all>
-                                <organisation>Itris</organisation>
-                            </all>
-                        </labels>
-                    </resources>
-
                     <images>
                         <!-- Image holding the artifact of this build -->
                         <image>
