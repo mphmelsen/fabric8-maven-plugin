@@ -18,8 +18,6 @@ node('jdk8') {
 
      git url: 'http://bitbucket.openshift.itris.lan/scm/vptx/' + microservice + '.git'
 
-     checkout scm
-
      def v = version()
      sh "${mvnCmd} clean compile"
 
