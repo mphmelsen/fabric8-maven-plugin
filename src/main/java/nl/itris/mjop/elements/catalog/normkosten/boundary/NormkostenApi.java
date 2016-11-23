@@ -2,6 +2,7 @@ package nl.itris.mjop.elements.catalog.normkosten.boundary;
 
 import nl.itris.mjop.elements.catalog.common.boundary.ApiResponseMessage;
 
+import javax.ejb.Stateless;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.SecurityContext;
 
 @io.swagger.annotations.Api(description = "the normkosten API")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-11-16T10:57:20.256Z")
+@Stateless
 public class NormkostenApi  {
     @POST
     @Consumes({ "application/json", "application/xml" })

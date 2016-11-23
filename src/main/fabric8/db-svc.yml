@@ -1,0 +1,11 @@
+spec:
+  ports:
+  - name: ${project.artifactId}-db
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: ${project.artifactId}-db
+    deploymentconfig: ${project.artifactId}-db
+  sessionAffinity: None
+  type: ClusterIP

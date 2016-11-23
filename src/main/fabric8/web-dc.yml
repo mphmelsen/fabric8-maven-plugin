@@ -1,0 +1,27 @@
+spec:
+  replicas: 1
+  triggers:
+  - type: ImageChange
+    imageChangeParams:
+      automatic: true
+      containerNames:
+      - ${project.artifactId}
+      from:
+        kind: ImageStreamTag
+        name: ${project.artifactId}:latest
+  - type: ConfigChange
+  template:
+    spec:
+      containers:
+        - name: ${project.artifactId}
+          env:
+          - name: POSTGRESQL_USER
+            value: mjopadmin
+          - name: POSTGRESQL_PASSWORD
+            value: mjopadmin
+          - name: POSTGRESQL_DATABASE
+            value: mjopelements
+          readinessProbe:
+            httpGet:
+              path: "/"
+              port: 8080

@@ -151,12 +151,12 @@
                     </security>
                 </datasource>
                 <datasource jta="true" jndi-name="java:/PostgresDS" pool-name="PostgresDS" enabled="true" use-ccm="true">
-                    <connection-url>jdbc:postgresql://${env.POSTGRESQL_PORT_5432_TCP_ADDR}:${env.POSTGRESQL_PORT_5432_TCP_PORT}/${env.POSTGRESQL_DATABASE}</connection-url>
+                    <connection-url>jdbc:postgresql://${env.POSTGRE_PORT_5432_TCP_ADDR}:${env.POSTGRES_PORT_5432_TCP_PORT}/${env.POSTGRESQL_DATABASE}</connection-url>
                     <driver-class>org.postgresql.Driver</driver-class>
                     <driver>postgresql</driver>
                     <security>
-                        <user-name>${env.POSTGRESQL_USER}</user-name>
-                        <password>${env.POSTGRESQL_PASSWORD}</password>
+                        <user-name>${env.POSTGRES_ENV_POSTGRES_USER}</user-name>
+                        <password>${env.POSTGRES_ENV_POSTGRES_PASSWORD}</password>
                     </security>
                     <validation>
                         <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"/>

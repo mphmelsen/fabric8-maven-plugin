@@ -49,8 +49,9 @@ node('jdk8') {
      sh "${mvnCmd} deploy -Dfabric8.namespace=${osEnvironment}"
 
      // tag for staging
+     sh "${ocCmd} tag ${osEnvironment}/${microservice}:${v} ${osEnvironment}/${microservice}:latest"
      sh "${ocCmd} tag ${osEnvironment}/${microservice}:latest staging/${microservice}:${v}"
-     sh "${ocCmd} tag ${osEnvironment}/${microservice}:latest staging/${microservice}:latest"
+     //sh "${ocCmd} tag ${osEnvironment}/${microservice}:latest staging/${microservice}:latest"
 
 }
 

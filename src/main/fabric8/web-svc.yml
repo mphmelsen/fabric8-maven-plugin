@@ -1,0 +1,11 @@
+spec:
+  ports:
+  - name: ${project.artifactId}
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: ${project.artifactId}
+    deploymentconfig: ${project.artifactId}
+  sessionAffinity: None
+  type: ClusterIP

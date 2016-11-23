@@ -6,7 +6,7 @@ RUN mkdir -p ${postgres_module_dir}
 ADD module.xml ${postgres_module_dir}
 ADD postgresql-9.4-1201.jdbc41.jar ${postgres_module_dir}
 
-ENV config_dir=/opt/jboss/wildfly/standalone/configuration/
+ENV config_dir=/opt/eap/standalone/configuration/
 
 ADD standalone.xml ${config_dir}
 ADD maven/*.war /opt/eap/standalone/deployments/

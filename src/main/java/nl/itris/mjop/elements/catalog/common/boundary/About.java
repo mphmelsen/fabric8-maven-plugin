@@ -1,12 +1,11 @@
 package nl.itris.mjop.elements.catalog.common.boundary;
 
 import javax.ejb.Stateless;
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -41,9 +40,9 @@ public class About {
 
     @GET
     @Produces({MediaType.TEXT_PLAIN})
-    public JsonObject about() {
+    public Response about() {
 
-        return Json.createObjectBuilder().add("version", properties.getProperty("git-sha-1")).build();
+        return Response.ok(properties.getProperty("git-sha-1")).build();
     }
 
 }

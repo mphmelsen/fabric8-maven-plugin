@@ -4,22 +4,15 @@ spec:
   - type: ImageChange
     imageChangeParams:
       automatic: true
+      containerNames:
+      - ${project.artifactId}-db
+      from:
+        kind: ImageStreamTag
+        name: ${project.artifactId}-db:latest
   - type: ConfigChange
   template:
     spec:
       containers:
-        - name: ${project.artifactId}
-          env:
-          - name: POSTGRESQL_USER
-            value: mjopadmin
-          - name: POSTGRESQL_PASSWORD
-            value: mjopadmin
-          - name: POSTGRESQL_DATABASE
-            value: mjopelements
-          readinessProbe:
-            httpGet:
-              path: "/"
-              port: 8080
         - name: ${project.artifactId}-db
           env:
           - name: POSTGRESQL_USER

@@ -3,6 +3,7 @@ package nl.itris.mjop.elements.catalog.elementen.boundary;
 import io.swagger.annotations.ApiParam;
 import nl.itris.mjop.elements.catalog.common.boundary.NotFoundException;
 
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
@@ -62,7 +63,12 @@ public interface ElementencatalogusApiService {
             @io.swagger.annotations.ApiResponse(code = 400, message = "Invalid ID supplied", response = Element.class, responseContainer = "List"),
 
             @io.swagger.annotations.ApiResponse(code = 404, message = "Element not found", response = Element.class, responseContainer = "List") })
-    public Response getElements(@ApiParam(value = "the requested page number (1 based)") Integer page,@ApiParam(value = "records returned per page") Integer recordsPerPage,SecurityContext securityContext)
+    public Response getElements(@ApiParam(value = "the requested page number (1 based)") Integer page
+            ,@ApiParam(value = "records returned per page") Integer recordsPerPage
+            ,@ApiParam(value = "a comma separated string that determines the fields that need to be returned see http://www.itris.nl/selecting") String select
+            ,@ApiParam(value = "a comma separated string containing sub entities that need to be returned expanded see http://www.itris.nl/expanding") String expand
+            ,@ApiParam(value = "a filter that can be used to filter te requested entity, all fields of the entity can be used to filter for explanation about the filter possibilities see http://www.itris.nl/filtering") String filter
+            ,@Context SecurityContext securityContext)
             throws NotFoundException;
 
     @io.swagger.annotations.ApiOperation(value = "Update existing element", notes = "", response = void.class, authorizations = {
