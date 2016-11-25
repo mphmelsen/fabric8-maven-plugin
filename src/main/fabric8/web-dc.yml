@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
         - name: ${project.artifactId}
+          image: ${project.artifactId}:${project.version}
           env:
           - name: POSTGRESQL_USER
             value: mjopadmin
