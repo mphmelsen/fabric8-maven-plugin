@@ -346,7 +346,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>fabric8-maven-plugin</artifactId>
-                <version>3.1.92</version>
+                <version>3.2.1</version>
 
                 <configuration>
                    <!-- <mode>openshift</mode>-->
@@ -388,6 +388,13 @@
                         <password>admin</password>
                         <useOpenShiftAuth>true</useOpenShiftAuth>
                     </authConfig>
+                    <enricher>
+                        <excludes>
+                            <exclude>fmp-image</exclude>
+                            <exclude>fmp-controller</exclude>
+                            <exclude>fmp-service</exclude>
+                        </excludes>
+                    </enricher>
                 </configuration>
 
                 <executions>
